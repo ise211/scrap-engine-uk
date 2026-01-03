@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, Sparkles, RefreshCw, Settings, Key } from 'lucide-react';
+import { Bot, Sparkles, RefreshCw } from 'lucide-react';
 import { ScrapPrice, MetalSpotPrice } from '../types';
 import { generateMarketAnalysis } from '../services/geminiService';
 import ReactMarkdown from 'react-markdown';
@@ -13,13 +13,10 @@ const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ prices, spotPrices }) =
   const [report, setReport] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [hasLoaded, setHasLoaded] = useState<boolean>(false);
-  const [showSettings, setShowSettings] = useState<boolean>(false);
-  const [apiKey, setApiKey] = useState<string>('');
 
   const handleGenerate = async () => {
     setLoading(true);
-    // Pass the custom API key if the user has entered one
-    const result = await generateMarketAnalysis(prices, spotPrices, apiKey);
+    const result = await generateMarketAnalysis(prices, spotPrices);
     setReport(result);
     setLoading(false);
     setHasLoaded(true);
@@ -34,17 +31,10 @@ const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ prices, spotPrices }) =
           </div>
           <div>
             <h2 className="text-lg font-bold">AI Market Analyst</h2>
-            <p className="text-xs text-indigo-200">Powered by Gemini 2.5</p>
+            <p className="text-xs text-indigo-200">Powered by Gemini 3 Flash</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className={`p-2 rounded-lg transition-colors ${showSettings ? 'bg-white/20 text-white' : 'hover:bg-white/10 text-indigo-200'}`}
-            title="API Settings"
-          >
-            <Settings size={20} />
-          </button>
           <button
             onClick={handleGenerate}
             disabled={loading}
@@ -64,25 +54,6 @@ const MarketAnalysis: React.FC<MarketAnalysisProps> = ({ prices, spotPrices }) =
           </button>
         </div>
       </div>
-
-      {showSettings && (
-        <div className="bg-indigo-950/50 p-4 border-b border-white/10 animate-in slide-in-from-top-2 duration-200">
-          <div className="flex items-center gap-2 mb-2 text-sm font-medium text-indigo-200">
-            <Key size={16} />
-            <label>Custom Gemini API Key</label>
-          </div>
-          <input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder="Paste your API key here (starts with AIza...)"
-            className="w-full px-4 py-2 bg-indigo-950 border border-indigo-700/50 rounded-lg text-white text-sm placeholder:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all"
-          />
-          <p className="text-xs text-indigo-400 mt-2">
-            Leave blank if you have configured the API_KEY environment variable. Your key is not stored permanently.
-          </p>
-        </div>
-      )}
 
       <div className="p-8 min-h-[300px]">
         {!hasLoaded && !loading ? (

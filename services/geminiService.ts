@@ -3,17 +3,17 @@ import { ScrapPrice, MetalSpotPrice } from "../types";
 
 export const generateMarketAnalysis = async (
   prices: ScrapPrice[],
-  spotPrices: MetalSpotPrice[],
-  customApiKey?: string
+  spotPrices: MetalSpotPrice[]
 ): Promise<string> => {
-  // Use the custom key if provided, otherwise fallback to environment variable
-  const apiKey = customApiKey || process.env.API_KEY;
+  // The API key must be obtained exclusively from the environment variable process.env.API_KEY
+  const apiKey = process.env.API_KEY;
 
   if (!apiKey) {
-    return "API Key is missing. Please enter your Gemini API Key in the settings icon above, or configure the API_KEY environment variable.";
+    console.error("API_KEY environment variable is missing.");
+    return "Market analysis is currently unavailable due to missing configuration.";
   }
 
-  // Initialize Client with the specific key for this request
+  // Initialize Client
   const ai = new GoogleGenAI({ apiKey });
 
   const priceSummary = prices.slice(0, 10).map(p => 
@@ -50,6 +50,6 @@ export const generateMarketAnalysis = async (
     return response.text || "No analysis could be generated.";
   } catch (error) {
     console.error("Gemini Analysis Error:", error);
-    return "Failed to generate market analysis. Please check your API key and try again.";
+    return "Failed to generate market analysis. Please try again later.";
   }
 };
