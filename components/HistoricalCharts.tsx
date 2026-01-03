@@ -44,7 +44,24 @@ const generateHistoryData = (item: ScrapPrice) => {
   return data;
 };
 
-const ChartCard = ({ item }: { item: ScrapPrice }) => {
+// Simple icon wrapper to avoid importing MapPin from lucide in the sub-component if not passed
+const MapPinIcon = ({ size }: { size: number }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round"
+  >
+    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+    <circle cx="12" cy="10" r="3" />
+  </svg>
+);
+
+const ChartCard: React.FC<{ item: ScrapPrice }> = ({ item }) => {
   const history = useMemo(() => generateHistoryData(item), [item.id, item.pricePerKg]);
   
   // Dimensions
@@ -140,23 +157,6 @@ const ChartCard = ({ item }: { item: ScrapPrice }) => {
     </div>
   );
 };
-
-// Simple icon wrapper to avoid importing MapPin from lucide in the sub-component if not passed
-const MapPinIcon = ({ size }: { size: number }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-  >
-    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
-    <circle cx="12" cy="10" r="3" />
-  </svg>
-);
 
 const HistoricalCharts: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
