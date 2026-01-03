@@ -6,15 +6,14 @@ export const generateMarketAnalysis = async (
   spotPrices: MetalSpotPrice[]
 ): Promise<string> => {
   // The API key must be obtained exclusively from the environment variable process.env.API_KEY
-  const apiKey = process.env.API_KEY;
-
-  if (!apiKey) {
+  if (!process.env.API_KEY) {
     console.error("API_KEY environment variable is missing.");
     return "Market analysis is currently unavailable due to missing configuration.";
   }
 
   // Initialize Client
-  const ai = new GoogleGenAI({ apiKey });
+  // Must use new GoogleGenAI({ apiKey: process.env.API_KEY })
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
   const priceSummary = prices.slice(0, 10).map(p => 
     `- ${p.material}: £${p.pricePerKg}/kg (${p.trend === 'up' ? '+' : ''}${p.changePercentage}%)`
